@@ -1,0 +1,31 @@
+name: Arduino Blink  
+
+on:  
+  push:  
+    branches:  
+      - main  
+
+jobs:  
+  build:  
+    runs-on: ubuntu-latest  
+
+    steps:  
+      - name: Checkout code  
+        uses: actions/checkout@v2  
+
+      - name: Setup Arduino CLI  
+        run: |  
+          sudo apt-get update  
+          sudo apt-get install -y arduino-cli  
+          arduino-cli config init  
+          arduino-cli config set board arduino:avr:uno  
+
+      - name: Compile Arduino code  
+        run: |  
+          arduino-cli compile --fqbn arduino:avr:uno .  
+
+      - name: Upload Arduino code  
+        uses: arduino-action/arduino-action@v1  
+        with:  
+          sketch: blink.ino       # Assurez-vous que ce fichier existe dans votre dépôt  
+          port: '/dev/ttyACM0'    # Changez ce port si nécessaire  
